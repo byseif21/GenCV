@@ -7,8 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
-  <script src="js/templates.js" defer></script>
-  <script src="js/script.js" defer></script>
+  <script src="js/script.js" type="module"></script>
 </head>
 <body>
   <div class="shell">
@@ -49,17 +48,17 @@
       <div class="card">
         <div class="card-title">Identity</div>
         <div class="field-row">
-          <div class="field"><label>Full Name</label><input id="name" value="Seif Soliman Mohammed"/></div>
-          <div class="field"><label>Title / Role</label><input id="jobtitle" value="Software Engineer | Full Stack .NET Developer"/></div>
+          <div class="field"><label>Full Name</label><input id="name" value=""/></div>
+          <div class="field"><label>Title / Role</label><input id="jobtitle" value=""/></div>
         </div>
         <div class="field-row triple">
-          <div class="field"><label>Email</label><input id="email" value="byseif21@gmail.com"/></div>
-          <div class="field"><label>Mobile</label><input id="mobile" value="+201020190600"/></div>
-          <div class="field"><label>Address</label><input id="address" value="Alexandria, Egypt"/></div>
+          <div class="field"><label>Email</label><input id="email" value=""/></div>
+          <div class="field"><label>Mobile</label><input id="mobile" value=""/></div>
+          <div class="field"><label>Address</label><input id="address" value=""/></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>LinkedIn URL</label><input id="linkedin" value="https://www.linkedin.com/in/-seif-soliman/"/></div>
-          <div class="field"><label>GitHub URL</label><input id="github" value="https://github.com/byseif21"/></div>
+          <div class="field"><label>LinkedIn URL</label><input id="linkedin" value=""/></div>
+          <div class="field"><label>GitHub URL</label><input id="github" value=""/></div>
         </div>
       </div>
     </div>
@@ -71,7 +70,7 @@
       <div class="card">
         <div class="card-title">Professional Summary</div>
         <div class="field-row single">
-          <div class="field"><label>Summary</label><textarea id="summary" rows="5">Results-driven Software Engineer with a passion for scalable, user-friendly web applications. With a strong problem-solving foundation and a background in Electrical &amp; Communication Engineering, bringing technical precision and creativity to full-stack development. Known for delivering high-quality solutions on time, thriving in dynamic environments, optimizing systems, enhancing user experiences, and collaborating to drive impactful results.</textarea></div>
+          <div class="field"><label>Summary</label><textarea id="summary" rows="5"></textarea></div>
         </div>
       </div>
     </div>
@@ -81,11 +80,6 @@
       <div class="section-title">Education</div>
       <div class="section-sub">Your academic background</div>
       <div id="edu-list">
-        <div class="card block-item">
-          <div class="block-head"><span class="block-tag">Degree #1</span><button class="rm-btn" onclick="this.closest('.block-item').remove()">×</button></div>
-          <div class="field-row"><div class="field"><label>Institution</label><input class="edu-inst" value="KMA (King Mariout Higher Institutes)"/></div><div class="field"><label>Location</label><input class="edu-loc" value="Alexandria, Egypt"/></div></div>
-          <div class="field-row"><div class="field"><label>Degree</label><input class="edu-deg" value="Bachelor of Engineering (B.E.) in Electrical, Electronic, and Communications Engineering"/></div><div class="field"><label>Period</label><input class="edu-period" value="Oct 2021 – Present"/></div></div>
-        </div>
       </div>
       <button class="add-btn" onclick="addBlock('edu')">+ Add Education</button>
     </div>
@@ -95,27 +89,6 @@
       <div class="section-title">Experience</div>
       <div class="section-sub">Work and internship history</div>
       <div id="exp-list">
-        <div class="card block-item">
-          <div class="block-head"><span class="block-tag">Role #1</span><button class="rm-btn" onclick="this.closest('.block-item').remove()">×</button></div>
-          <div class="field-row"><div class="field"><label>Company</label><input class="exp-co" value="Monkeytype (MT)"/></div><div class="field"><label>Location</label><input class="exp-loc" value="Remote"/></div></div>
-          <div class="field-row"><div class="field"><label>Role</label><input class="exp-role" value="Software Engineer"/></div><div class="field"><label>Period</label><input class="exp-period" value="Feb 2024 – Present"/></div></div>
-          <div class="field-row single"><div class="field"><label>Description</label><textarea class="exp-desc" rows="3">Contributing to one of the most popular open-source typing web apps, focusing on enhancing both backend reliability and frontend performance. Implemented scalable improvements using TypeScript, Express, and MongoDB, and optimized backend validation with Zod for better structure and maintainability.</textarea></div></div>
-          <div class="field-row single"><div class="field"><label>Achievements</label><textarea class="exp-ach" rows="2">Improved backend stability through architectural refactoring, delivered significant UI/UX performance boosts, and enhanced theme customization, typing experience and design consistency. Collaborated with the core team on 50+ pull requests, elevating overall code quality and user experience.</textarea></div></div>
-        </div>
-        <div class="card block-item">
-          <div class="block-head"><span class="block-tag">Role #2</span><button class="rm-btn" onclick="this.closest('.block-item').remove()">×</button></div>
-          <div class="field-row"><div class="field"><label>Company</label><input class="exp-co" value="Digital Egypt Pioneers Initiative (DEPI)"/></div><div class="field"><label>Location</label><input class="exp-loc" value="Alexandria, Egypt"/></div></div>
-          <div class="field-row"><div class="field"><label>Role</label><input class="exp-role" value="Software Engineer Intern"/></div><div class="field"><label>Period</label><input class="exp-period" value="Oct 2024 – May 2025"/></div></div>
-          <div class="field-row single"><div class="field"><label>Description</label><textarea class="exp-desc" rows="3">Developed scalable web applications using C#, .NET Core, and SQL for backend functionality and HTML5, CSS3, and JavaScript for front-end interfaces. Utilized ASP.NET Core MVC and Docker for containerization, ensuring efficient deployment and performance.</textarea></div></div>
-          <div class="field-row single"><div class="field"><label>Achievements</label><textarea class="exp-ach" rows="2">Improved API response times by 15% through optimization techniques and reduced deployment errors by 20% using Docker. Reduced database query execution time by 25%, improving overall application performance.</textarea></div></div>
-        </div>
-        <div class="card block-item">
-          <div class="block-head"><span class="block-tag">Role #3</span><button class="rm-btn" onclick="this.closest('.block-item').remove()">×</button></div>
-          <div class="field-row"><div class="field"><label>Company</label><input class="exp-co" value="Information Technology Industry Development Agency (ITIDA)"/></div><div class="field"><label>Location</label><input class="exp-loc" value="Remote"/></div></div>
-          <div class="field-row"><div class="field"><label>Role</label><input class="exp-role" value="Freelance Web Developer Intern"/></div><div class="field"><label>Period</label><input class="exp-period" value="Jan 2025 – Apr 2025"/></div></div>
-          <div class="field-row single"><div class="field"><label>Description</label><textarea class="exp-desc" rows="3">Built a client management system using React, JavaScript, and .NET to streamline workflow and improve client communication. Implemented responsive design principles to ensure compatibility across devices.</textarea></div></div>
-          <div class="field-row single"><div class="field"><label>Achievements</label><textarea class="exp-ach" rows="2">Delivered the project 2 weeks ahead of schedule, receiving positive feedback from clients for improved usability. Successfully negotiated project terms with 5+ clients, increasing freelance income by 30%.</textarea></div></div>
-        </div>
       </div>
       <button class="add-btn" onclick="addBlock('exp')">+ Add Experience</button>
     </div>
@@ -125,24 +98,6 @@
       <div class="section-title">Projects</div>
       <div class="section-sub">Key personal and professional projects</div>
       <div id="proj-list">
-        <div class="card block-item">
-          <div class="block-head"><span class="block-tag">Project #1</span><button class="rm-btn" onclick="this.closest('.block-item').remove()">×</button></div>
-          <div class="field-row"><div class="field"><label>Project Name</label><input class="proj-name" value="monkeytype – Typing Test App"/></div><div class="field"><label>Technologies</label><input class="proj-tech" value="TypeScript, Express, SCSS, Firebase, MongoDB"/></div></div>
-          <div class="field-row single"><div class="field"><label>Description</label><textarea class="proj-desc" rows="2">Contributed to one of the most popular open-source typing test apps, improving performance, UI responsiveness, and overall user experience through multiple high-impact frontend enhancements.</textarea></div></div>
-          <div class="field-row single"><div class="field"><label>Key Achievements</label><textarea class="proj-ach" rows="2">Refactored and optimized the backend using Zod validation. Improved UI/UX consistency and introduced a more flexible theme and customization system. Contributed through 50+ pull requests.</textarea></div></div>
-        </div>
-        <div class="card block-item">
-          <div class="block-head"><span class="block-tag">Project #2</span><button class="rm-btn" onclick="this.closest('.block-item').remove()">×</button></div>
-          <div class="field-row"><div class="field"><label>Project Name</label><input class="proj-name" value="SMA – Smart Home Automation App"/></div><div class="field"><label>Technologies</label><input class="proj-tech" value="TypeScript, React, Express, Tailwind, PostgreSQL"/></div></div>
-          <div class="field-row single"><div class="field"><label>Description</label><textarea class="proj-desc" rows="2">A full-stack web application for remotely controlling and monitoring smart home devices in real time, featuring responsive dashboards, secure authentication, and device status visualization.</textarea></div></div>
-          <div class="field-row single"><div class="field"><label>Key Achievements</label><textarea class="proj-ach" rows="2">Integrated MQTT protocol for real-time device control. Implemented RESTful APIs. Optimized database queries and API responses, significantly reducing load times.</textarea></div></div>
-        </div>
-        <div class="card block-item">
-          <div class="block-head"><span class="block-tag">Project #3</span><button class="rm-btn" onclick="this.closest('.block-item').remove()">×</button></div>
-          <div class="field-row"><div class="field"><label>Project Name</label><input class="proj-name" value="StyleZa – E-Commerce Web App"/></div><div class="field"><label>Technologies</label><input class="proj-tech" value=".NET 8.0, C#, ASP.NET MVC, Entity Framework, SQL Server, HTML, CSS, JavaScript"/></div></div>
-          <div class="field-row single"><div class="field"><label>Description</label><textarea class="proj-desc" rows="2">Built a full-stack e-commerce platform with user authentication, shopping cart, checkout, and product management. Designed for scalability with a structured MVC architecture.</textarea></div></div>
-          <div class="field-row single"><div class="field"><label>Key Achievements</label><textarea class="proj-ach" rows="2">Developed a seamless shopping experience with animations and smooth navigation. Implemented secure authentication and order tracking.</textarea></div></div>
-        </div>
       </div>
       <button class="add-btn" onclick="addBlock('proj')">+ Add Project</button>
     </div>

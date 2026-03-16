@@ -1,35 +1,56 @@
-let currentTemplate = 'classic';
+import { cvTemplates } from './templates/index.js';
+import { seifData } from './templates/seif-data.js';
+
+// Expose to window for debugging or other scripts if needed
+window.cvTemplates = cvTemplates;
+
+let currentTemplate = 'seif-cv';
 let pdfjsLib = window['pdfjs-dist/build/pdf'] || null;
 // Setup PDF.js worker
 if (pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
 
-const skillData = {
-  lang: ["C#", "C++", "Python", "TypeScript", "JavaScript", "SQL", "HTML", "CSS"],
-  tech: [".NET 8.0/9.0", "ASP.NET MVC", "Entity Framework", "Tailwind", "React", "Vite", "Node.js", "Git", "GitHub", "SQL Server", "Supabase", "MongoDB", "Express"],
-  hard: ["Full-Stack Web Development", "Database Management", "Version Control (Git/GitHub)", "UI/UX Design", "Software Debugging", "Project Management", "API Development", "Computer Troubleshooting", "Digital Security"],
-  soft: ["Problem-solving", "Adaptability", "Responsibility", "Communication", "Teamwork", "Leadership", "Active Listening", "Public Speaking", "Collaboration"]
-};
+const skillData = { lang: [], tech: [], hard: [], soft: [] };
 
 // ... existing DOM logic
 function renderSkills() {
   ['lang', 'tech', 'hard', 'soft'].forEach(k => {
-    document.getElementById(k + '-tags').innerHTML = skillData[k].map((s, i) =>
-      `<div class="skill-chip">${s}<button onclick="rmSkill('${k}',${i}); updatePreviews();">×</button></div>`).join('');
+    const container = document.getElementById(k + '-tags');
+    if (container) {
+      container.innerHTML = (skillData[k] || []).map((s, i) =>
+        `<div class="skill-chip">${s}<button onclick="rmSkill('${k}',${i}); updatePreviews();">×</button></div>`).join('');
+    }
   });
 }
-function addSkill(k) { const i = document.getElementById(k + '-in'); const v = i.value.trim(); if (v) { skillData[k].push(v); i.value = ''; renderSkills(); updatePreviews(); } }
-function rmSkill(k, i) { skillData[k].splice(i, 1); renderSkills(); }
 
-// Create the template UI cards dynamically from templates.js
+function addSkill(k) { 
+  const i = document.getElementById(k + '-in'); 
+  const v = i.value.trim(); 
+  if (v) { 
+    if (!skillData[k]) skillData[k] = [];
+    skillData[k].push(v); 
+    i.value = ''; 
+    renderSkills(); 
+    updatePreviews(); 
+  } 
+}
+
+function rmSkill(k, i) { 
+  if (skillData[k]) {
+    skillData[k].splice(i, 1); 
+    renderSkills(); 
+  }
+}
+
+// Create the template UI cards dynamically from templates folder
 function renderTemplateCards() {
   const container = document.getElementById('tpl-cards-container');
-  if (!container || !window.cvTemplates) return;
+  if (!container || !cvTemplates) return;
 
   container.innerHTML = '';
 
-  Object.values(window.cvTemplates).forEach(tpl => {
+  Object.values(cvTemplates).forEach(tpl => {
     const card = document.createElement('div');
     card.className = `tpl-card ${currentTemplate === tpl.id ? 'selected' : ''}`;
     card.id = `tpl-${tpl.id}`;
@@ -90,12 +111,64 @@ function debounce(func, wait) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderSkills();
+  // Initial load: seif data
+  loadCVData(seifData);
   renderTemplateCards();
   initListeners();
   // Generate initial previews
   setTimeout(updatePreviews, 500);
 });
+
+function loadCVData(data) {
+  const s = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  s('name', data.name);
+  s('jobtitle', data.jobtitle);
+  s('email', data.email);
+  s('mobile', data.mobile);
+  s('address', data.address);
+  s('linkedin', data.linkedin);
+  s('github', data.github);
+  s('summary', data.summary);
+
+  // Skills
+  ['lang', 'tech', 'hard', 'soft'].forEach(k => {
+    skillData[k] = data.skills ? [...(data.skills[k] || [])] : [];
+  });
+  renderSkills();
+
+  // Blocks
+  const clearList = id => { const el = document.getElementById(id); if(el) el.innerHTML = ''; };
+  clearList('edu-list'); clearList('exp-list'); clearList('proj-list');
+  
+  if(data.edu) data.edu.forEach(e => addBlockWithData('edu', e));
+  if(data.exp) data.exp.forEach(e => addBlockWithData('exp', e));
+  if(data.proj) data.proj.forEach(p => addBlockWithData('proj', p));
+}
+
+function addBlockWithData(type, data) {
+  addBlock(type);
+  const list = document.getElementById(`${type}-list`);
+  const last = list.lastElementChild;
+  if(!last) return;
+  if(type === 'edu') {
+    last.querySelector('.edu-inst').value = data.inst || '';
+    last.querySelector('.edu-loc').value = data.loc || '';
+    last.querySelector('.edu-deg').value = data.deg || '';
+    last.querySelector('.edu-period').value = data.period || '';
+  } else if(type === 'exp') {
+    last.querySelector('.exp-co').value = data.co || '';
+    last.querySelector('.exp-loc').value = data.loc || '';
+    last.querySelector('.exp-role').value = data.role || '';
+    last.querySelector('.exp-period').value = data.period || '';
+    last.querySelector('.exp-desc').value = data.desc || '';
+    last.querySelector('.exp-ach').value = data.ach || '';
+  } else if(type === 'proj') {
+    last.querySelector('.proj-name').value = data.name || '';
+    last.querySelector('.proj-tech').value = data.tech || '';
+    last.querySelector('.proj-desc').value = data.desc || '';
+    last.querySelector('.proj-ach').value = data.ach || '';
+  }
+}
 
 const panels = ['header', 'summary', 'education', 'experience', 'projects', 'skills'];
 function sw(name, el) {
@@ -103,24 +176,37 @@ function sw(name, el) {
   document.getElementById('panel-' + name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('pfill').style.width = ((panels.indexOf(name) + 1) / panels.length * 100) + '%';
+  const pfill = document.getElementById('pfill');
+  if (pfill) {
+    pfill.style.width = ((panels.indexOf(name) + 1) / panels.length * 100) + '%';
+  }
   if(window.innerWidth <= 900) {
-      document.querySelector('.sidebar').classList.remove('open');
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar) sidebar.classList.remove('open');
   }
 }
 
 function setTemplate(t) {
   currentTemplate = t;
   document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById(`tpl-${t}`)?.classList.add('selected');
+  const card = document.getElementById(`tpl-${t}`);
+  if (card) card.classList.add('selected');
+  updatePreviews();
 }
 
-let eduN = 1, expN = 3, prjN = 3;
+// Warn before page refresh
+window.addEventListener('beforeunload', (e) => {
+  // Cancel the event (standard behavior)
+  e.preventDefault();
+  // Chrome requires returnValue to be set
+  e.returnValue = '';
+});
+
+let eduN = 0, expN = 0, prjN = 0;
 function addBlock(type) {
   const lists = { edu: 'edu-list', exp: 'exp-list', proj: 'proj-list' };
   const labels = { edu: 'Degree', exp: 'Role', proj: 'Project' };
-  const counters = { edu: ++eduN, exp: ++expN, proj: ++prjN };
-  const n = counters[type];
+  const n = type === 'edu' ? ++eduN : type === 'exp' ? ++expN : ++prjN;
   const d = document.createElement('div');
   d.className = 'card block-item';
   if (type === 'edu') {
@@ -139,9 +225,11 @@ function addBlock(type) {
     <div class="field-row single"><div class="field"><label>Description</label><textarea class="proj-desc" rows="2"></textarea></div></div>
     <div class="field-row single"><div class="field"><label>Key Achievements</label><textarea class="proj-ach" rows="2"></textarea></div></div>`;
   }
-  document.getElementById(lists[type]).appendChild(d);
-  initListeners(); // re-init listeners for new inputs
-  updatePreviews();
+  const listEl = document.getElementById(lists[type]);
+  if (listEl) {
+    listEl.appendChild(d);
+    initListeners(); // re-init listeners for new inputs
+  }
 }
 
 function getData() {
@@ -167,8 +255,12 @@ function getData() {
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  const t = document.getElementById('toast'); 
+  if (t) {
+    t.textContent = msg; 
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
 }
 
 // ─────────────────────────────────────────
@@ -180,8 +272,8 @@ function exportPDF() {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const d = getData();
 
-  if (window.cvTemplates && window.cvTemplates[currentTemplate]) {
-    window.cvTemplates[currentTemplate].render(doc, d);
+  if (cvTemplates && cvTemplates[currentTemplate]) {
+    cvTemplates[currentTemplate].render(doc, d);
   } else {
     console.error("Unknown template", currentTemplate);
   }
@@ -194,11 +286,11 @@ function exportPDF() {
 // PREVIEW GENERATION
 // ─────────────────────────────────────────
 async function updatePreviews() {
-  if (!window.cvTemplates || !window['pdfjs-dist/build/pdf']) return;
+  if (!cvTemplates || !window['pdfjs-dist/build/pdf']) return;
   const d = getData();
   const { jsPDF } = window.jspdf;
 
-  for (const tpl of Object.values(window.cvTemplates)) {
+  for (const tpl of Object.values(cvTemplates)) {
     try {
       // 1. Generate invisible generic PDF
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -240,3 +332,12 @@ async function updatePreviews() {
     }
   }
 }
+
+// Expose functions to window for onclick handlers in HTML
+window.addSkill = addSkill;
+window.rmSkill = rmSkill;
+window.sw = sw;
+window.addBlock = addBlock;
+window.exportPDF = exportPDF;
+window.updatePreviews = updatePreviews;
+window.setTemplate = setTemplate;
