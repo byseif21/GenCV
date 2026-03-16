@@ -6,23 +6,22 @@
   <title>GenCv - Open Source Professional CV Builder</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="js/templates.js" defer></script>
   <script src="js/script.js" defer></script>
 </head>
 <body>
   <div class="shell">
+  <!-- Mobile Toggle Button -->
+  <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+    ☰ Menu & Templates
+  </button>
   <aside class="sidebar">
     <div class="logo">Gen<span>Cv</span></div>
 
     <div class="nav-label">Template</div>
-    <div class="tpl-cards">
-      <div class="tpl-card" id="tpl-dark" onclick="setTemplate('dark')">
-        <div class="tpl-card-name">◼ Dark Header</div>
-        <div class="tpl-card-desc">Gold accent, dark top strip</div>
-      </div>
-      <div class="tpl-card selected" id="tpl-classic" onclick="setTemplate('classic')">
-        <div class="tpl-card-name">◻ Classic Document</div>
-        <div class="tpl-card-desc">Your original CV style</div>
-      </div>
+    <div class="tpl-cards" id="tpl-cards-container">
+      <!-- Templates are dynamically injected here by script.js -->
     </div>
 
     <div class="sidebar-divider"></div>
@@ -160,6 +159,10 @@
   </main>
   </div>
 
+  <!-- Large Preview Overlay -->
+  <div id="preview-tooltip" class="preview-tooltip">
+      <canvas id="preview-tooltip-canvas"></canvas>
+  </div>
   <div class="toast" id="toast"></div>
 </body>
 </html>
