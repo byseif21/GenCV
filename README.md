@@ -1,42 +1,53 @@
-# GenCv
+# GenCv - CV Builder
 
 GenCv is a web application built mainly to easily create and update a Curriculum Vitae (CV) directly in the browser.
 
 ## Features
 
-- **Real-Time Data Entry**: Easy management of different CV sections.
-- **Dynamic Skills Management**: Add dynamic tags for languages, technologies, and soft/hard skills.
-- **Multiple Templates**: Choose from several professional templates to suit your style.
-- **Instant PDF Export**: Client-side offline PDF generation using `jsPDF`.
-- **Responsive Design**: Fast and accessible UI with distinct inputs.
+- **AI Chat Assistant**: Chat interface for content editing and suggestions.
+- **AI-Optimized Data Import**: Supports importing data from PDF files or raw text strings.
+- **Templates**: Multiple layout options for CV generation.
+- **PDF Export**: Generates PDF files on the client side via `jsPDF`.
 
-## Setup & Usage
+### Local Development
+To use AI components locally, the [Netlify CLI](https://docs.netlify.com/cli/get-started/) is required:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/GenCv.git
+   git clone https://github.com/byseif21/GenCV.git
    ```
-2. **Open the application**:
-   Since the project uses JavaScript ES Modules, you need to serve it using a local web server (like VS Code's "Live Server" extension, or `npx serve .`).
-3. Fill in your CV sections and click **Export PDF**.
+2. **Install dependencies**:
+   ```bash
+   npm install -g netlify-cli
+   ```
+3. **Start the server**:
+   ```bash
+   netlify dev
+   ```
+4. **Configuration**: Copy [.env.example](.env.example) to `.env` and add your API key.
 
-## Adding New Templates
+## Development
 
-Adding a new template is now easy!
+### Adding Templates
+1. Create a new JavaScript file in the [templates/](templates/) directory (e.g., `templates/style-name.js`).
+2. Define the template object with `id`, `name`, and a `render(doc, data)` function.
+3. Import the template in [js/templates/index.js](js/templates/index.js) and add it to the `cvTemplates` object.
+4. Use the helper functions in [js/templates/utils.js](js/templates/utils.js) for layout and text wrapping.
+5. Refer to the [templates/README.md](templates/README.md) for detailed technical instructions and AI-assisted rendering tips.
 
-1. Create a new JS file in the root [templates/](templates/) folder (e.g., `templates/modern.js`).
-2. Define your template object with `id`, `name`, `desc`, and a `render(doc, data)` function.
-3. Import your new template in [js/templates/index.js](js/templates/index.js) and add it to the `cvTemplates` object.
-4. You can use the helpers in [js/templates/utils.js](js/templates/utils.js) to simplify your rendering logic.
-5. Check out the [templates/README.md](templates/README.md) for more details and tips on using AI to generate new styles.
+## Project Structure
 
-## Technologies Used
+- **[js/script.js](js/script.js)**: Main application logic, including data management, UI rendering, and AI integration.
+- **[css/style.css](css/style.css)**: Project styling, organized by layout, components, and animations.
+- **[templates/](templates/)**: CV template definitions and the [template README](templates/README.md).
+- **[netlify/functions/](netlify/functions/)**: Serverless functions, including the AI proxy for secure API communication.
 
-- HTML5
-- CSS3 (Vanilla, Modern Properties, Custom Scrollbars)
-- JavaScript (Vanilla, ES6+)
-- [jsPDF](https://github.com/parallax/jsPDF) for client-side PDF Generation.
+## Technologies
+
+- **Frontend**: HTML, CSS, JavaScript (ES6 Modules)
+- **Backend**: Netlify Functions (Node.js)
+- **PDF**: jsPDF, pdf.js
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License. See [LICENSE](LICENSE) for details.
