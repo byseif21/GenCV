@@ -128,16 +128,20 @@
     </button>
     <div class="floating-options">
       <button onclick="exportData()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         Save Data (JSON)
       </button>
       <button onclick="document.getElementById('import-file').click()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Import from (JSON / PDF)
       </button>
       <button onclick="openPasteModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
         Import from Text (Paste)
+      </button>
+      <button onclick="openAIModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9z"/></svg>
+        AI Key <span id="ai-key-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#555;margin-left:4px;vertical-align:middle"></span>
       </button>
       <div class="opt-divider"></div>
       <button class="opt-danger" onclick="resetData()">
@@ -157,10 +161,86 @@
       <textarea id="paste-area" class="modal-textarea" placeholder="Experience&#10;Google - Software Engineer&#10;2020 - Present..."></textarea>
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closePasteModal()">Cancel</button>
-        <button class="btn-primary" onclick="importFromText()">Import & Parse</button>
+        <button class="btn-primary" onclick="importFromText()">Import &amp; Parse</button>
       </div>
     </div>
   </div>
+
+  <!-- AI Settings Modal (Custom Chat Provider) -->
+  <div class="modal-overlay" id="ai-modal">
+    <div class="modal-card">
+      <div class="modal-title">✨ Chat API Provider</div>
+      <div class="modal-desc" style="margin-bottom:12px">Configure your preferred AI provider (OpenAI, xAI/Grok, OpenRouter, etc.) for the interactive chat. The app's built-in imports use a separate silent API.</div>
+      
+      <div style="font-size:12px; font-weight:600; margin-bottom:4px; color:var(--color-text-secondary)">API Endpoint (OpenAI Compatible)</div>
+      <input type="text" id="ai-endpoint-input" class="modal-input" style="font-family:monospace;font-size:12px;margin-bottom:10px" value="https://api.openai.com/v1/chat/completions"/>
+      
+      <div style="font-size:12px; font-weight:600; margin-bottom:4px; color:var(--color-text-secondary)">Model Name</div>
+      <input type="text" id="ai-model-input" class="modal-input" style="font-family:monospace;font-size:12px;margin-bottom:10px" value="gpt-4o-mini"/>
+      
+      <div style="font-size:12px; font-weight:600; margin-bottom:4px; color:var(--color-text-secondary)">API Key</div>
+      <input type="password" id="ai-key-input" class="modal-input" style="font-family:monospace;font-size:12px" placeholder="sk-..."/>
+      
+      <div id="ai-key-status" style="font-size:12px;margin-top:6px;min-height:18px"></div>
+      
+      <div class="modal-actions" style="margin-top:16px">
+        <button class="btn-secondary" onclick="closeAIModal()">Cancel</button>
+        <button class="btn-secondary opt-danger" onclick="clearAIKey()" style="margin-right:auto">Clear Settings</button>
+        <button class="btn-primary" onclick="saveAIKey()">Save Provider</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Chat Drawer -->
+  <div id="ai-chat-drawer" class="ai-chat-drawer">
+    <div class="ai-chat-header">
+      <div class="ai-chat-title">
+        <div class="ai-chat-title-icon">✨</div>
+        <div>
+          <div class="ai-chat-title-text">AI CV Assistant</div>
+          <div class="ai-chat-title-sub" id="ai-chat-model-label">Powered by OpenRouter</div>
+        </div>
+      </div>
+      <div class="ai-chat-header-actions">
+        <button class="ai-chat-icon-btn" onclick="clearChat()" title="Clear chat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+        <button class="ai-chat-icon-btn" onclick="openAIModal()" title="AI key settings">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9z"/></svg>
+        </button>
+        <button class="ai-chat-icon-btn" onclick="toggleChat()" title="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="ai-chat-messages" id="ai-chat-messages">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="ai-chat-suggestions" id="ai-chat-suggestions">
+      <button onclick="sendSuggestion('Clean up my projects section')">Clean up projects</button>
+      <button onclick="sendSuggestion('Fix my skills categorization')">Fix skills</button>
+      <button onclick="sendSuggestion('Rewrite my summary to sound more professional')">Improve summary</button>
+      <button onclick="sendSuggestion('Review my CV and suggest improvements')">Review CV</button>
+    </div>
+
+    <div class="ai-chat-input-row">
+      <textarea id="ai-chat-input" class="ai-chat-input" rows="1" placeholder="Ask anything about your CV..."
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+      <button class="ai-chat-send-btn" id="ai-chat-send" onclick="sendChat()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- AI Chat Toggle Button -->
+  <button class="ai-chat-fab" id="ai-chat-fab" onclick="toggleChat()" title="AI CV Assistant">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="ai-fab-label">AI Assistant</span>
+    <span id="ai-fab-dot" class="ai-fab-dot"></span>
+  </button>
 
   <div class="toast" id="toast"></div>
 </body>
