@@ -34,10 +34,12 @@
     <div class="nav-item" onclick="sw('skills',this)"><span class="dot"></span>Skills</div>
 
     <div class="pbar"><div class="pfill" id="pfill" style="width:16%"></div></div>
-    <button class="export-btn" onclick="exportPDF()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Export PDF
-    </button>
+    <div class="sidebar-actions">
+      <button class="export-btn" onclick="exportPDF()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export PDF
+      </button>
+    </div>
   </aside>
 
   <main class="main">
@@ -118,6 +120,48 @@
   <div id="preview-tooltip" class="preview-tooltip">
       <canvas id="preview-tooltip-canvas"></canvas>
   </div>
+  <!-- Floating Options Menu -->
+  <div class="floating-menu">
+    <button class="floating-trigger">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span>Settings</span>
+    </button>
+    <div class="floating-options">
+      <button onclick="exportData()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Save Data (JSON)
+      </button>
+      <button onclick="document.getElementById('import-file').click()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Import from (JSON / PDF)
+      </button>
+      <button onclick="openPasteModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        Import from Text (Paste)
+      </button>
+      <div class="opt-divider"></div>
+      <button class="opt-danger" onclick="resetData()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Reset All Data
+      </button>
+    </div>
+  </div>
+
+  <input type="file" id="import-file" style="display:none" accept=".json,.pdf" onchange="importData(event)"/>
+
+  <!-- Manual Paste Modal -->
+  <div class="modal-overlay" id="paste-modal">
+    <div class="modal-card">
+      <div class="modal-title">Paste CV Text</div>
+      <div class="modal-desc">Paste the full text of your CV below. We'll try to parse it automatically.</div>
+      <textarea id="paste-area" class="modal-textarea" placeholder="Experience&#10;Google - Software Engineer&#10;2020 - Present..."></textarea>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closePasteModal()">Cancel</button>
+        <button class="btn-primary" onclick="importFromText()">Import & Parse</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 </body>
 </html>

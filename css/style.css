@@ -265,8 +265,11 @@ body {
     object-fit: contain;
 }
 
-.export-btn {
+.sidebar-actions {
     margin-top: auto;
+}
+
+.export-btn {
     background: #B8960C;
     color: #1a1a1a;
     border: none;
@@ -282,12 +285,119 @@ body {
     gap: 8px;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(184, 150, 12, 0.2);
+    width: 100%;
 }
 
 .export-btn:hover {
     background: #c9a50e;
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(184, 150, 12, 0.3);
+}
+
+/* Floating Action Menu */
+.floating-menu {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.floating-trigger {
+    background: #161616;
+    color: #999;
+    border: 1px solid #333;
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.floating-menu:hover .floating-trigger {
+    background: #222;
+    color: #fff;
+    border-color: #B8960C;
+}
+
+.floating-options {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    width: 220px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-menu:hover .floating-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.floating-options button {
+    background: transparent;
+    color: #bbb;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.floating-options button:hover {
+    background: #262626;
+    color: #fff;
+}
+
+.floating-options button svg {
+    opacity: 0.6;
+}
+
+.floating-options button:hover svg {
+    opacity: 1;
+    color: #B8960C;
+}
+
+.opt-divider {
+    height: 1px;
+    background: #333;
+    margin: 4px 8px;
+}
+
+.floating-options .opt-danger {
+    color: #ff6b6b;
+}
+
+.floating-options .opt-danger:hover {
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b;
+}
+
+.floating-options .opt-danger:hover svg {
+    color: #ff6b6b;
 }
 
 .main {
@@ -548,7 +658,7 @@ body {
 
 .toast {
     position: fixed;
-    bottom: 2rem;
+    bottom: 6rem;
     right: 2rem;
     background: #181818;
     color: #fff;
@@ -627,6 +737,7 @@ body {
     background: #444;
 }
 
+
 /* Responsive Mobile Layout */
 @media (max-width: 900px) {
     .shell {
@@ -665,4 +776,92 @@ body {
     }
 
     /* Stack fields vertically */
+}
+
+/* Modal for Manual Paste */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.modal-desc {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 1.5rem;
+}
+
+.modal-textarea {
+    width: 100%;
+    min-height: 250px;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #eee;
+    padding: 1rem;
+    font-family: inherit;
+    font-size: 13.5px;
+    margin-bottom: 1.5rem;
+    outline: none;
+}
+
+.modal-textarea:focus {
+    border-color: #B8960C;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-secondary {
+    background: #2a2a2a;
+    color: #ccc;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.btn-primary {
+    background: #B8960C;
+    color: #1a1a1a;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
 }
