@@ -175,11 +175,43 @@ body {
 .sidebar-divider {
     height: 1px;
     background: #2a2a2a;
-    margin: 1.5rem 0;
+    margin: 180px 0 1.5rem;
 }
 
 .sidebar-actions {
+    margin-top: 1.5rem;
+}
+
+.sidebar-footer {
     margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid #2e2e2e;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75rem;
+    color: #666;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.github-link:hover {
+    color: #fff;
+}
+
+.github-link svg {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.github-link:hover svg {
+    opacity: 1;
 }
 
 /* ── PROGRESS & FEEDBACK ─────────────────────────────────────────────────── */
@@ -474,9 +506,11 @@ body {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
-    max-height: 65vh;
+    height: 224px;
     overflow-y: auto;
     overflow-x: hidden;
+    flex-shrink: 0;
+    margin-bottom: -150px;
     padding-right: 6px;
     scrollbar-width: thin;
     scrollbar-color: #555 transparent;
