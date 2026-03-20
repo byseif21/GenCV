@@ -1,4 +1,7 @@
 # GenCv - CV Builder
+<p align="center">
+  <img src="GenCv.png" alt="GenCv Logo" width="600">
+</p>
 
 GenCv is a web application built mainly to easily create and update a Curriculum Vitae (CV) directly in the browser.
 

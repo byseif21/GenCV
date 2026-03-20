@@ -109,21 +109,17 @@ body {
 /* ── NAVIGATION & SIDEBAR ─────────────────────────────────────────────────── */
 
 .logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #fff;
-    letter-spacing: 0.04em;
-    margin-bottom: 2rem;
-    padding-bottom: 1.25rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
     border-bottom: 1px solid #2e2e2e;
-    text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
-.logo span {
-    color: #B8960C;
-    font-style: italic;
-    font-weight: 600;
+.logo img {
+    max-width: 130px;
+    height: auto;
+    display: block;
 }
 
 .nav-label {
