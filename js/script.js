@@ -4,6 +4,8 @@ import { seifData } from './templates/seif-data.js';
 window.cvTemplates = cvTemplates;
 
 let currentTemplate = 'seif-cv';
+let pdfBufferCache = {}; // Cache for PDF ArrayBuffers for multi-page previews
+let previewHideTimeout = null; // Timer for hover persistence
 let pdfjsLib = window['pdfjs-dist/build/pdf'] || null;
 if (pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -145,25 +147,64 @@ function setTemplate(t) {
   const card = document.getElementById(`tpl-${t}`);
   if (card) card.classList.add('selected');
   updatePreviews();
+  
+  // refresh the preview immediately when selected so it upgrades to scrollable view
+  const tooltip = document.getElementById('preview-tooltip');
+  if (tooltip && tooltip.classList.contains('show')) {
+    showLargePreview(t);
+  }
 }
 
-function showLargePreview(tplId) {
-  const sourceCanvas = document.getElementById(`preview-${tplId}`);
+async function showLargePreview(tplId) {
+  if (previewHideTimeout) clearTimeout(previewHideTimeout);
+  
   const tooltip = document.getElementById('preview-tooltip');
-  const tooltipCanvas = document.getElementById('preview-tooltip-canvas');
-  if (sourceCanvas && tooltip && tooltipCanvas) {
-    tooltipCanvas.width = sourceCanvas.width;
-    tooltipCanvas.height = sourceCanvas.height;
-    const ctx = tooltipCanvas.getContext('2d');
-    ctx.clearRect(0, 0, tooltipCanvas.width, tooltipCanvas.height);
-    ctx.drawImage(sourceCanvas, 0, 0);
-    tooltip.classList.add('show');
+  if (!tooltip) return;
+
+  tooltip.innerHTML = '';
+  tooltip.classList.add('show');
+
+  // full preview for selected CV (Render all pages with scrolling)
+  if (tplId === currentTemplate && pdfBufferCache[tplId]) {
+    try {
+      // use Uint8Array and .slice() to ensure we never use a detached buffer!
+      const pdfData = new Uint8Array(pdfBufferCache[tplId]).slice();
+      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+      
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const canvas = document.createElement('canvas');
+        tooltip.appendChild(canvas);
+        
+        const viewport = page.getViewport({ scale: 1.5 }); // higher quality for large preview
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        const renderContext = { canvasContext: canvas.getContext('2d'), viewport: viewport };
+        await page.render(renderContext).promise;
+      }
+    } catch (e) {
+      console.error('Multi-page preview error:', e);
+    }
+  } else {
+    // normal preview for unselected templates (Just Page 1 quick copy)
+    const sourceCanvas = document.getElementById(`preview-${tplId}`);
+    if (sourceCanvas) {
+      const canvas = document.createElement('canvas');
+      canvas.width = sourceCanvas.width;
+      canvas.height = sourceCanvas.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(sourceCanvas, 0, 0);
+      tooltip.appendChild(canvas);
+    }
   }
 }
 
 function hideLargePreview() {
-  const tooltip = document.getElementById('preview-tooltip');
-  if (tooltip) tooltip.classList.remove('show');
+  previewHideTimeout = setTimeout(() => {
+    const tooltip = document.getElementById('preview-tooltip');
+    if (tooltip) tooltip.classList.remove('show');
+  }, 400);
 }
 
 function renderSkills() {
@@ -279,8 +320,9 @@ async function updatePreviews() {
         const doc = new jsPDF({ unit: 'mm', format: 'a4' });
         tpl.render(doc, d);
         const pdfOutput = doc.output('arraybuffer');
+        pdfBufferCache[tpl.id] = new Uint8Array(pdfOutput);
 
-        const pdf  = await pdfjsLib.getDocument({ data: pdfOutput }).promise;
+        const pdf  = await pdfjsLib.getDocument({ data: pdfOutput.slice(0) }).promise;
         const page = await pdf.getPage(1);
 
         const canvas = document.getElementById(`preview-${tpl.id}`);
@@ -1089,4 +1131,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initListeners();
   updateAIKeyDot();
   setTimeout(updatePreviews, 500);
+
+  const tooltip = document.getElementById('preview-tooltip');
+  if (tooltip) {
+    tooltip.onmouseenter = () => { if (previewHideTimeout) clearTimeout(previewHideTimeout); };
+    tooltip.onmouseleave = hideLargePreview;
+  }
 });

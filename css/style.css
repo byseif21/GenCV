@@ -595,32 +595,58 @@ body {
 
 .preview-tooltip {
     position: fixed;
-    left: 340px;
+    left: 325px;
     top: 50%;
     transform: translateY(-50%);
-    width: 480px;
-    background: #111;
+    width: 520px;
+    max-height: 95vh;
+    background: rgba(17, 17, 17, 0.95);
+    backdrop-filter: blur(12px);
     border: 1px solid #333;
-    border-radius: 10px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    z-index: 9999;
-    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    padding: 15px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    overflow-y: auto;
+    pointer-events: auto;
 }
 
 .preview-tooltip.show {
     opacity: 1;
     visibility: visible;
+    transform: translateY(-50%) translateX(10px);
 }
 
 .preview-tooltip canvas {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 6px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.preview-tooltip canvas:last-child {
+    margin-bottom: 0;
+}
+
+/* Tooltip Scrollbar */
+.preview-tooltip::-webkit-scrollbar {
+    width: 6px;
+}
+.preview-tooltip::-webkit-scrollbar-track {
+    background: #111;
+}
+.preview-tooltip::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+}
+.preview-tooltip::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* ── FLOATING ACTION MENU ─────────────────────────────────────────────────── */
