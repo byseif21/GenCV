@@ -5,7 +5,7 @@ export const gencvCv = {
   name: '◼ GenCv CV',
   desc: 'Gold accent, dark top strip',
   render: function(doc, d) {
-    const utils = createTemplateUtils(doc, { margin: 18, startY: 0 });
+    const utils = createTemplateUtils(doc, { margin: 18, startY: 20 });
     const { M, CW, W } = { M: utils.margin, CW: utils.contentWidth, W: utils.pageWidth };
     
     function secHead(t){
