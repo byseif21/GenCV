@@ -7,10 +7,11 @@ GenCv is a web application built mainly to easily create and update a Curriculum
 
 ## Features
 
-- **AI Chat Assistant**: Chat interface for content editing and suggestions.
-- **AI-Optimized Data Import**: Supports importing data from PDF files or raw text strings.
-- **Templates**: Multiple layout options for CV generation.
-- **PDF Export**: Generates PDF files on the client side via `jsPDF`.
+- **AI Chat Assistant**: Interactive chat interface for content editing and suggestions.
+- **AI-Powered Data Import**: Intelligent extraction and unification from PDFs or raw text.
+- **ATS Compatibility Checker**: Real-time scoring system with detailed analysis and one-click AI optimization.
+- **Multiple Templates**: Professionally designed layouts with real-time browser preview.
+- **PDF Export**: High-fidelity client-side PDF generation via `jsPDF`.
 
 ### Local Development
 To use AI components locally, the [Netlify CLI](https://docs.netlify.com/cli/get-started/) is required:
