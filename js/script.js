@@ -798,6 +798,11 @@ async function importFromText() {
   const text = area ? area.value.trim() : '';
   if (!text) return;
 
+  if (text.length < 150) {
+      alert("The pasted text is too short to be a valid CV. Please paste your full resume content (minimum 150 characters).");
+      return;
+  }
+
   showToast('✨ AI is analyzing your text...');
   const currentData = getData();
   try {
