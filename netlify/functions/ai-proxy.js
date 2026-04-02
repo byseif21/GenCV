@@ -24,7 +24,8 @@ ${JSON.stringify(currentCV, null, 2)}
 STRICT OPERATING RULES:
 1. DATA INTEGRITY: Do NOT invent, hallucinate, or add any new education, experience, or projects that are not clearly present in the input text. Only enhance what is provided.
 2. ATS ENHANCEMENT:
-   - Rewrite descriptions and achievements using strong action verbs (e.g., "Spearheaded", "Architected", "Optimized", "Executed").
+   - Summary Optimization: Ensure the professional summary is high-impact and substantial, ideally between 50-100 words. If the input summary is too briefing, professionally expand it by synthesizing highlights from the provided experience.
+   - Narrative & Impact: Rewrite descriptions and achievements using strong action verbs (e.g., "Spearheaded", "Architected", "Optimized", "Executed").
    - Maintain and highlight any quantitative metrics (%, $, numbers).
    - Use an implicit third-person, professional tone (remove "I", "me", "my", "our", etc.).
    - Ensure "achievements" are formatted as concise, punchy bullet points separated by periods or newlines.

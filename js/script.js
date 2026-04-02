@@ -868,13 +868,13 @@ function runATSCheck() {
     const wordCount = data.summary.split(/\s+/).filter(w => w.length > 0).length;
     let summaryScore = 0;
 
-    if (wordCount >= 30 && wordCount <= 80) {
+    if (wordCount >= 50 && wordCount <= 100) {
       pass(`Summary word count is optimal (${wordCount} words).`, 5);
       summaryScore += 5;
-    } else if (wordCount > 80) {
-      fail(`Summary is too long (${wordCount} words). Keep it under 80 words.`);
+    } else if (wordCount > 100) {
+      fail(`Summary is too long (${wordCount} words). Keep it under 100 words (ideal: 50-100).`);
     } else {
-      fail(`Summary is too short (${wordCount} words). Aim for 30-80 words.`);
+      fail(`Summary is too short (${wordCount} words). Aim for 50-100 words.`);
     }
 
     const firstPersonRx = /\b(I|me|my|mine|we|us|our)\b/i;
@@ -1021,7 +1021,7 @@ function fixATSWithAI() {
     if (drawer && !drawer.classList.contains('open')) {
         toggleChat();
     }
-    const prompt = "Please review my CV as a strict Applicant Tracking System (ATS). Fix any missing sections, expand my summary if too short, rewrite my experience bullet points to start with strong action verbs, and invent realistic quantitative metrics if none exist to maximize my ATS score.";
+    const prompt = "Please review my CV as a strict Applicant Tracking System (ATS). Fix any missing sections, expand my summary to be between 50-100 words if it's too short, rewrite my experience bullet points to start with strong action verbs, and invent realistic quantitative metrics if none exist to maximize my ATS score.";
     setTimeout(() => {
         sendSuggestion(prompt);
     }, 400);
