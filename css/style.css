@@ -750,6 +750,31 @@ body {
     color: #ff6b6b;
 }
 
+.ats-btn {
+    background: transparent;
+    color: #bfa12a;
+    border: 1px solid #bfa12a;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.ats-btn:hover {
+    background: rgba(184, 150, 12, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(184, 150, 12, 0.15);
+}
+
 .export-btn {
     background: #B8960C;
     color: #1a1a1a;
@@ -876,6 +901,181 @@ body {
     cursor: pointer;
     font-weight: 600;
     font-size: 13px;
+}
+
+/* ── ATS CHECKER INTERFACE ───────────────────────────────────────────────── */
+
+.ats-modal-card {
+    max-width: 650px;
+    width: 95%;
+}
+
+.ats-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 600px) {
+    .ats-layout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+.ats-score-section {
+    flex: 0 0 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #111;
+    padding: 20px 10px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.ats-score-circle-wrapper {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    --p: 0;
+    --c: #f87171;
+    background: conic-gradient(var(--c) calc(var(--p) * 1%), #222 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(0.8);
+    opacity: 0;
+}
+
+.ats-score-circle-wrapper.show {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.ats-score-inner {
+    width: 94px;
+    height: 94px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.ats-score-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ccc;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.ats-details-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.ats-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+    border-top: 1px solid #333;
+    padding-top: 15px;
+}
+
+.ats-checks-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 6px;
+}
+
+.ats-checks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.ats-checks-list::-webkit-scrollbar { width: 4px; }
+.ats-checks-list::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
+.ats-check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    padding: 12px;
+    background: #1e1e1e;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.ats-check-item:hover {
+    transform: translateY(-1px);
+}
+
+.ats-check-item.pass {
+    border-left: 3px solid #4ade80;
+}
+.ats-check-item.pass:hover {
+    border-color: #4ade80;
+    background: rgba(74, 222, 128, 0.05);
+}
+
+.ats-check-item.fail {
+    border-left: 3px solid #f87171;
+}
+.ats-check-item.fail:hover {
+    border-color: #f87171;
+    background: rgba(248, 113, 113, 0.05);
+}
+
+.ats-check-icon {
+    font-size: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.ats-check-text {
+    color: #ddd;
+}
+
+.ats-fix-btn {
+    background: linear-gradient(135deg, #B8960C, #d4b537);
+    color: #1a1a1a;
+    border: none;
+    box-shadow: 0 4px 12px rgba(184, 150, 12, 0.2);
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.ats-fix-btn:hover {
+    box-shadow: 0 6px 15px rgba(184, 150, 12, 0.4);
+    transform: translateY(-2px);
 }
 
 /* ── AI CHAT INTERFACE ────────────────────────────────────────────────────── */

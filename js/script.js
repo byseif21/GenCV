@@ -830,6 +830,203 @@ async function importFromText() {
   }
 }
 
+// ── ATS CHECKER LOGIC ────────────────────────────────────────────────────────
+
+function openATSModal() {
+  const modal = document.getElementById('ats-modal');
+  if (modal) {
+    modal.classList.add('open');
+    runATSCheck();
+  }
+}
+
+function closeATSModal() {
+  document.getElementById('ats-modal')?.classList.remove('open');
+}
+
+function runATSCheck() {
+  const data = getData();
+  const checks = [];
+  let score = 0;
+  const maxScore = 100;
+
+  function pass(msg, pts) { checks.push({ ok: true, msg }); score += pts; }
+  function fail(msg) { checks.push({ ok: false, msg }); }
+
+  // 1: Contact Info (15 pts total: Email 5, Phone 5, Link 5)
+  if (data.email && data.email.includes('@')) pass('Email address included.', 5);
+  else fail('Missing valid email address.');
+  
+  if (data.mobile && data.mobile.length > 5) pass('Phone number included.', 5);
+  else fail('Missing phone number.');
+  
+  if (data.linkedin || data.github) pass('Professional link (LinkedIn/GitHub) included.', 5);
+  else fail('Missing LinkedIn or GitHub profile link.');
+
+  // 2: Summary (15 pts total: Length 5, Tone 5, Fluff 5)
+  if (data.summary) {
+    const wordCount = data.summary.split(/\s+/).filter(w => w.length > 0).length;
+    let summaryScore = 0;
+
+    if (wordCount >= 30 && wordCount <= 80) {
+      pass(`Summary word count is optimal (${wordCount} words).`, 5);
+      summaryScore += 5;
+    } else if (wordCount > 80) {
+      fail(`Summary is too long (${wordCount} words). Keep it under 80 words.`);
+    } else {
+      fail(`Summary is too short (${wordCount} words). Aim for 30-80 words.`);
+    }
+
+    const firstPersonRx = /\b(I|me|my|mine|we|us|our)\b/i;
+    if (firstPersonRx.test(data.summary)) {
+      fail('Avoid first-person pronouns ("I", "my", "we"). Use implicit subjects (e.g. "Developed..." instead of "I developed...").');
+    } else {
+      pass('Professional tone (no first-person pronouns).', 5);
+      summaryScore += 5;
+    }
+
+    const fluffRx = /\b(hard worker|hardworking|team player|detail(?:\-|\s)?oriented|fast learner|think outside the box|go-getter|synergy|dynamic|motivated|passionate|track record|meet deadlines|communication skills|works effectively)\b/i;
+    if (fluffRx.test(data.summary)) {
+      fail('Avoid generic buzzwords like "hard worker" or "team player". ATS and recruiters prefer specific achievements. Show, don\'t tell.');
+    } else {
+      pass('No generic fluff buzzwords detected.', 5);
+      summaryScore += 5;
+    }
+  } else {
+    fail('Missing professional summary.');
+  }
+
+  // 3: Experience (40 pts total)
+  if (data.exp && data.exp.length > 0) {
+    pass('Work experience section exists.', 5);
+
+    let totalBullets = 0;
+    let hasActionVerbs = false;
+    let hasMetrics = false;
+
+    const actionVerbsRx = /\b(Led|Developed|Managed|Designed|Created|Built|Increased|Reduced|Improved|Configured|Implemented|Launched|Spearheaded)\b/i;
+    const metricsRx = /(\d+%|\$?\d+[KM]?|\d+\+?)/;
+
+    data.exp.forEach(e => {
+        const achs = e.ach ? e.ach.split(/[.\n]+/).filter(l => l.trim().length > 5) : [];
+        totalBullets += achs.length;
+        achs.forEach(bullet => {
+            if (actionVerbsRx.test(bullet)) hasActionVerbs = true;
+            if (metricsRx.test(bullet)) hasMetrics = true;
+        });
+    });
+
+    if (totalBullets >= data.exp.length * 2) {
+      pass(`Good amount of detail (${totalBullets} total achievements).`, 15);
+    } else {
+      fail('Add more bullet points / achievements (ideal: 2+ per role).');
+      score += 5;
+    }
+
+    if (hasActionVerbs) pass('Used strong action verbs in experience.', 10);
+    else fail('Start bullet points with Action Verbs (e.g. Led, Built, Improved).');
+
+    if (hasMetrics) pass('Used quantitative metrics (numbers, %, $) in experience.', 10);
+    else fail('Achievements lack metrics. Try adding numbers to show impact.');
+
+  } else {
+    fail('Missing Work Experience section.');
+  }
+
+  // 4: Education (10 pts)
+  if (data.edu && data.edu.length > 0) pass('Education background listed.', 10);
+  else fail('Missing Education section.');
+
+  // 5: Skills (20 pts)
+  const totalSkills = ['lang', 'tech', 'hard', 'soft'].reduce((acc, k) => acc + (data.skills[k]?.length || 0), 0);
+  if (totalSkills >= 8) pass(`Adequate skills listed (${totalSkills} skills found).`, 20);
+  else if (totalSkills > 0) {
+    fail(`Slightly low on skills (${totalSkills}). Aim for 8+ total keywords.`);
+    score += 10;
+  } else {
+    fail('Missing Skills. Keywords are crucial for ATS systems.');
+  }
+
+  // Render Score
+  const wrapper = document.getElementById('ats-score-circle-wrapper');
+  const scoreText = document.getElementById('ats-score-text');
+  const label = document.getElementById('ats-score-label');
+  const list = document.getElementById('ats-checks-list');
+
+  if (wrapper && scoreText && label && list) {
+    let finalScore = Math.min(100, Math.max(0, score));
+    
+    if (finalScore >= 85) { label.textContent = "Excellent ATS Compatibility!"; label.style.color = "#4ade80"; }
+    else if (finalScore >= 60) { label.textContent = "Needs some improvement."; label.style.color = "#facc15"; }
+    else { label.textContent = "High risk of ATS rejection."; label.style.color = "#f87171"; }
+
+    // Color Interpolation Helper (Red -> Yellow -> Green)
+    const getInterpolatedColor = (p) => {
+      const stops = [[248, 113, 113], [250, 204, 21], [74, 222, 128]];
+      if (p <= 30) return `rgb(${stops[0].join(', ')})`;
+      if (p <= 70) {
+        const f = (p - 30) / 40;
+        const c = stops[0].map((s, j) => Math.round(s + f * (stops[1][j] - s)));
+        return `rgb(${c.join(', ')})`;
+      }
+      const f = (p - 70) / 30;
+      const c = stops[1].map((s, j) => Math.round(s + f * (stops[2][j] - s)));
+      return `rgb(${c.join(', ')})`;
+    };
+
+    setTimeout(() => wrapper.classList.add('show'), 50);
+
+    let start = null;
+    const duration = 1500, easeOutQuart = x => 1 - Math.pow(1 - x, 4);
+
+    const step = (t) => {
+      if (!start) start = t;
+      const progress = Math.min((t - start) / duration, 1);
+      const val = finalScore * easeOutQuart(progress);
+      const color = getInterpolatedColor(val);
+      
+      wrapper.style.setProperty('--p', val);
+      wrapper.style.setProperty('--c', color);
+      scoreText.textContent = Math.floor(val) + '%';
+      scoreText.style.color = color;
+      wrapper.style.boxShadow = `0 0 15px ${color}55`;
+      
+      if (progress < 1) window.atsAnimationId = requestAnimationFrame(step);
+      else {
+        scoreText.textContent = finalScore + '%';
+        wrapper.style.setProperty('--p', finalScore);
+      }
+    };
+    
+    if (window.atsAnimationId) cancelAnimationFrame(window.atsAnimationId);
+    window.atsAnimationId = requestAnimationFrame(step);
+
+    list.innerHTML = checks.map(c => `
+      <div class="ats-check-item ${c.ok ? 'pass' : 'fail'}">
+        <div class="ats-check-icon" style="color: ${c.ok ? '#4ade80' : '#f87171'}">
+          ${c.ok ? 
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : 
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+          }
+        </div>
+        <div class="ats-check-text">${c.msg}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function fixATSWithAI() {
+    closeATSModal();
+    const drawer = document.getElementById('ai-chat-drawer');
+    if (drawer && !drawer.classList.contains('open')) {
+        toggleChat();
+    }
+    const prompt = "Please review my CV as a strict Applicant Tracking System (ATS). Fix any missing sections, expand my summary if too short, rewrite my experience bullet points to start with strong action verbs, and invent realistic quantitative metrics if none exist to maximize my ATS score.";
+    setTimeout(() => {
+        sendSuggestion(prompt);
+    }, 400);
+}
+
 // ── AI ASSISTANT CORE ────────────────────────────────────────────────────────
 
 async function callAIAssistant(userMsg, currentCV, apiKey, endpoint = 'https://openrouter.ai/api/v1/chat/completions', overrideModel = 'meta-llama/llama-3.3-70b-instruct:free') {
@@ -1124,6 +1321,9 @@ window.toggleChat       = toggleChat;
 window.clearChat        = clearChat;
 window.sendChat         = sendChat;
 window.sendSuggestion   = sendSuggestion;
+window.openATSModal     = openATSModal;
+window.closeATSModal    = closeATSModal;
+window.fixATSWithAI     = fixATSWithAI;
 
 document.addEventListener('DOMContentLoaded', () => {
   loadCVData(seifData);

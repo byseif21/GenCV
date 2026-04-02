@@ -38,6 +38,10 @@
 
     <div class="pbar"><div class="pfill" id="pfill" style="width:16%"></div></div>
     <div class="sidebar-actions">
+      <button class="ats-btn" onclick="openATSModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        Check ATS Score
+      </button>
       <button class="export-btn" onclick="exportPDF()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export PDF
@@ -172,6 +176,42 @@
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closePasteModal()">Cancel</button>
         <button class="btn-primary" onclick="importFromText()">Import &amp; Parse</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATS Checker Modal -->
+  <div class="modal-overlay" id="ats-modal">
+    <div class="modal-card ats-modal-card">
+      <div class="modal-title" style="border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px; text-align: center;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B8960C" stroke-width="2" style="vertical-align: middle; margin-right: 8px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        ATS Compatibility Score
+      </div>
+      
+      <div class="ats-layout">
+        <div class="ats-score-section">
+          <div class="ats-score-circle-wrapper" id="ats-score-circle-wrapper">
+            <div class="ats-score-inner">
+              <span id="ats-score-text">0%</span>
+            </div>
+          </div>
+          <div class="ats-score-label" id="ats-score-label">Calculating...</div>
+        </div>
+
+        <div class="ats-details-section">
+          <div class="ats-checks-title">Detailed Analysis &nbsp;<span style="font-size: 11px; font-weight: normal; color:#666">(Strict Mode)</span></div>
+          <div class="ats-checks-list" id="ats-checks-list">
+            <!-- JS fills this -->
+          </div>
+        </div>
+      </div>
+
+      <div class="ats-footer-actions">
+        <button class="ats-fix-btn" onclick="fixATSWithAI()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9z"/></svg>
+          Auto-Fix with AI
+        </button>
+        <button class="btn-secondary" onclick="closeATSModal()">Close</button>
       </div>
     </div>
   </div>
